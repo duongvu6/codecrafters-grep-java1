@@ -11,6 +11,10 @@ public class PatternMatcher {
           return inputLine.chars().anyMatch(c -> Character.isLetterOrDigit(c) || c == '_');
         } else if (pattern.startsWith("[") && pattern.endsWith("]")) {
             String sub = pattern.substring(1, pattern.length() - 1);
+            if (sub.startsWith("^")) {
+                String newSub = sub.substring(1);
+                return inputLine.chars().anyMatch(c -> newSub.indexOf(c) != -1);
+            }
             return inputLine.chars().anyMatch(c -> sub.indexOf(c) != -1);
         } else {
             throw new RuntimeException("Unhandled pattern: " + pattern);
