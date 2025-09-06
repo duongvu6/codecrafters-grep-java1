@@ -8,7 +8,7 @@ public class PatternMatcher {
         } else if (pattern.equals("\\d")) {
             return inputLine.chars().allMatch(Character::isDigit);
         } else if (pattern.equals("\\w")) {
-          return inputLine.chars().allMatch(c -> Character.isLetterOrDigit(c) || c == '_');
+          return inputLine.chars().anyMatch(c -> Character.isLetterOrDigit(c) || c == '_');
         } else {
             throw new RuntimeException("Unhandled pattern: " + pattern);
         }
