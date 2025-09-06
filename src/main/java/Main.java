@@ -1,3 +1,5 @@
+import service.PatternMatcher;
+
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -17,18 +19,12 @@ public class Main {
 
     // Uncomment this block to pass the first stage
     // 
-     if (matchPattern(inputLine, pattern)) {
+     if (PatternMatcher.matchPattern(inputLine, pattern)) {
          System.exit(0);
      } else {
          System.exit(1);
      }
   }
 
-  public static boolean matchPattern(String inputLine, String pattern) {
-    if (pattern.length() == 1) {
-      return inputLine.contains(pattern);
-    } else {
-      throw new RuntimeException("Unhandled pattern: " + pattern);
-    }
-  }
+
 }
