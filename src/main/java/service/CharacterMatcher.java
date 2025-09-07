@@ -1,6 +1,6 @@
 package service;
 
-public class CharacterMatcher extends RegexMatcher{
+public class CharacterMatcher implements RegexMatcher{
     private char character;
     public CharacterMatcher(char character) {
         this.character = character;
@@ -14,5 +14,10 @@ public class CharacterMatcher extends RegexMatcher{
     @Override
     public int match(String input) {
         return input.indexOf(character);
+    }
+
+    @Override
+    public int match(String input, int startIndex) {
+        return input.indexOf(character, startIndex);
     }
 }
