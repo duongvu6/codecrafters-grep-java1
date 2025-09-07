@@ -1,23 +1,40 @@
 package service;
 
 
+import java.util.ArrayList;
+
 public class PatternMatcher {
     public static boolean matchPattern(String inputLine, String pattern) {
-        if (pattern.length() == 1) {
-            return inputLine.contains(pattern);
-        } else if (pattern.equals("\\d")) {
-            return inputLine.chars().anyMatch(Character::isDigit);
-        } else if (pattern.equals("\\w")) {
-          return inputLine.chars().anyMatch(c -> Character.isLetterOrDigit(c) || c == '_');
-        } else if (pattern.startsWith("[") && pattern.endsWith("]")) {
-            String sub = pattern.substring(1, pattern.length() - 1);
-            if (sub.startsWith("^")) {
-                String newSub = sub.substring(1);
-                return inputLine.chars().anyMatch(c -> newSub.indexOf(c) == -1);
+        ArrayList<RegexMatcher> regex = new ArrayList<>();
+        for (int i = 0; i < pattern.length(); i++) {
+            if (pattern.charAt(i) == '\\') {
+                i++;
+                switch (pattern.charAt(i)) {
+                    case 'd' -> regex.add(new RangeMatcher("0-9"));
+                    case 'w' -> regex.add(new RangeMatcher("a-z", "A-Z", "0-9", "_"));
+                    default -> {}
+                }
+            } else if (pattern.charAt(i) == '[') {
+                int endIndex = pattern.indexOf(']', i);
+                if (pattern.charAt(i + 1) == '^') {
+                    String sub = pattern.substring(i + 2, endIndex);
+                    regex.add(new NegativeRangeMatcher(sub));
+                } else {
+                    String sub  = pattern.substring(i + 1, endIndex);
+                    regex.add(new RangeMatcher(sub));
+                }
+                i = endIndex;
+            } else {
+                regex.add(new CharacterMatcher(pattern.charAt(i)));
             }
-            return inputLine.chars().anyMatch(c -> sub.indexOf(c) != -1);
-        } else {
-            throw new RuntimeException("Unhandled pattern: " + pattern);
         }
+        int testIndex = regex.get(0).match(inputLine);
+        for (RegexMatcher matcher : regex) {
+            if (testIndex == -1 || !matcher.check(inputLine.charAt(testIndex))) {
+                return false;
+            }
+            testIndex++;
+        }
+        return true;
     }
 }
